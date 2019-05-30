@@ -386,7 +386,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Newsome Five Methods</h1>
 <h4 class="author">Chuck Cleland</h4>
-<h4 class="date">May 29, 2019 02:54:58 PM EDT</h4>
+<h4 class="date">May 30, 2019 09:05:31 AM EDT</h4>
 
 </div>
 
@@ -404,8 +404,9 @@ $(document).ready(function () {
 <p><a href="https://onlinelibrary.wiley.com/doi/full/10.1002/sim.7664">Newsome, S. J., Keogh, R. H., &amp; Daniel, R. M. (2018). Estimating long‐term treatment effects in observational data: A comparison of the performance of different methods under real‐world uncertainty. <em>Statistics in medicine</em>, 37(15), 2367-2390.</a></p>
 <pre class="r"><code>library(haven)
 library(geepack)
-library(tidyverse)</code></pre>
-<pre class="r"><code>DF &lt;- read_dta(&quot;c:/chuck/NYU/Khan/R01DA044037/Newsome/simdata/sim4.dta&quot;)</code></pre>
+library(tidyverse)
+library(data.table)</code></pre>
+<pre class="r"><code>DF &lt;- read_dta(&quot;c:/chuck/NYU/Khan/R01DA044037/Newsome/simdata/sim4plusA.dta&quot;)</code></pre>
 <ul>
 <li>This simulated dataset contains 6 repeated assessments for each of 7500 patients</li>
 </ul>
@@ -480,9 +481,9 @@ library(tidyverse)</code></pre>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">29.20455</td>
+<td align="right">13.960337</td>
 <td align="right">0</td>
-<td align="right">63.72225</td>
+<td align="right">71.43592</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">NA</td>
@@ -492,69 +493,45 @@ library(tidyverse)</code></pre>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">2</td>
-<td align="right">29.20455</td>
+<td align="right">13.960337</td>
 <td align="right">0</td>
-<td align="right">76.55982</td>
+<td align="right">79.99022</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">63.72225</td>
+<td align="right">71.43592</td>
 <td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">3</td>
-<td align="right">29.20455</td>
-<td align="right">1</td>
-<td align="right">66.49707</td>
+<td align="right">13.960337</td>
+<td align="right">0</td>
+<td align="right">80.23156</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">76.55982</td>
+<td align="right">79.99022</td>
 <td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">4</td>
-<td align="right">29.20455</td>
-<td align="right">1</td>
-<td align="right">51.73596</td>
+<td align="right">13.960337</td>
+<td align="right">0</td>
+<td align="right">94.46866</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">66.49707</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">5</td>
-<td align="right">29.20455</td>
-<td align="right">1</td>
-<td align="right">65.32443</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">51.73596</td>
-<td align="right">1</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">6</td>
-<td align="right">29.20455</td>
-<td align="right">1</td>
-<td align="right">62.07980</td>
+<td align="right">80.23156</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">65.32443</td>
-<td align="right">1</td>
-<td align="right">3</td>
 </tr>
 <tr class="odd">
 <td align="right">2</td>
 <td align="right">1</td>
-<td align="right">29.51451</td>
+<td align="right">34.870109</td>
 <td align="right">0</td>
-<td align="right">74.59578</td>
+<td align="right">77.28329</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">NA</td>
@@ -564,69 +541,117 @@ library(tidyverse)</code></pre>
 <tr class="even">
 <td align="right">2</td>
 <td align="right">2</td>
-<td align="right">29.51451</td>
-<td align="right">0</td>
-<td align="right">62.28028</td>
-<td align="right">14</td>
+<td align="right">34.870109</td>
 <td align="right">1</td>
-<td align="right">74.59578</td>
+<td align="right">86.51579</td>
+<td align="right">12</td>
+<td align="right">1</td>
+<td align="right">77.28329</td>
 <td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="right">2</td>
 <td align="right">3</td>
-<td align="right">29.51451</td>
+<td align="right">1</td>
+<td align="right">6.272053</td>
 <td align="right">0</td>
-<td align="right">53.73727</td>
+<td align="right">74.03810</td>
+<td align="right">21</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">6.272053</td>
+<td align="right">1</td>
+<td align="right">72.10983</td>
+<td align="right">15</td>
+<td align="right">1</td>
+<td align="right">74.03810</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">6.272053</td>
+<td align="right">1</td>
+<td align="right">77.93319</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">72.10983</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">4</td>
+<td align="right">6.272053</td>
+<td align="right">1</td>
+<td align="right">76.34600</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">77.93319</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">7.350985</td>
+<td align="right">0</td>
+<td align="right">87.12598</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">2</td>
+<td align="right">7.350985</td>
+<td align="right">0</td>
+<td align="right">79.56094</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">87.12598</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">3</td>
+<td align="right">7.350985</td>
+<td align="right">0</td>
+<td align="right">90.65804</td>
 <td align="right">27</td>
 <td align="right">1</td>
-<td align="right">62.28028</td>
+<td align="right">79.56094</td>
 <td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="right">2</td>
 <td align="right">4</td>
-<td align="right">29.51451</td>
-<td align="right">0</td>
-<td align="right">62.63541</td>
-<td align="right">32</td>
+<td align="right">4</td>
+<td align="right">7.350985</td>
 <td align="right">1</td>
-<td align="right">53.73727</td>
+<td align="right">91.87501</td>
+<td align="right">36</td>
+<td align="right">1</td>
+<td align="right">90.65804</td>
 <td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="right">2</td>
 <td align="right">5</td>
-<td align="right">29.51451</td>
-<td align="right">0</td>
-<td align="right">50.71416</td>
-<td align="right">10</td>
 <td align="right">1</td>
-<td align="right">62.63541</td>
+<td align="right">6.248849</td>
 <td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">2</td>
-<td align="right">6</td>
-<td align="right">29.51451</td>
-<td align="right">0</td>
-<td align="right">62.89812</td>
-<td align="right">34</td>
-<td align="right">1</td>
-<td align="right">50.71416</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="right">1</td>
-<td align="right">18.03942</td>
-<td align="right">0</td>
-<td align="right">84.96377</td>
+<td align="right">118.45908</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">NA</td>
@@ -634,88 +659,64 @@ library(tidyverse)</code></pre>
 <td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="right">3</td>
-<td align="right">2</td>
-<td align="right">18.03942</td>
-<td align="right">0</td>
-<td align="right">97.34987</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">84.96377</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="right">3</td>
-<td align="right">18.03942</td>
-<td align="right">0</td>
-<td align="right">95.11179</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">97.34987</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">3</td>
-<td align="right">4</td>
-<td align="right">18.03942</td>
-<td align="right">0</td>
-<td align="right">112.08112</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">95.11179</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="right">3</td>
 <td align="right">5</td>
-<td align="right">18.03942</td>
+<td align="right">2</td>
+<td align="right">6.248849</td>
 <td align="right">0</td>
-<td align="right">115.08923</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">112.08112</td>
+<td align="right">115.54284</td>
 <td align="right">0</td>
 <td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="right">3</td>
-<td align="right">6</td>
-<td align="right">18.03942</td>
-<td align="right">0</td>
-<td align="right">104.74043</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">115.08923</td>
+<td align="right">118.45908</td>
 <td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="right">4</td>
-<td align="right">1</td>
-<td align="right">69.87135</td>
+<td align="right">5</td>
+<td align="right">3</td>
+<td align="right">6.248849</td>
 <td align="right">0</td>
-<td align="right">48.99943</td>
-<td align="right">34</td>
-<td align="right">1</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">125.11173</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">115.54284</td>
+<td align="right">0</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
+<td align="right">5</td>
 <td align="right">4</td>
-<td align="right">2</td>
-<td align="right">69.87135</td>
+<td align="right">6.248849</td>
 <td align="right">0</td>
-<td align="right">39.59628</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">48.99943</td>
+<td align="right">132.90326</td>
 <td align="right">0</td>
 <td align="right">0</td>
+<td align="right">125.11173</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">6.248849</td>
+<td align="right">0</td>
+<td align="right">124.89345</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">132.90326</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">1</td>
+<td align="right">19.780676</td>
+<td align="right">0</td>
+<td align="right">59.22609</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
 </tr>
 </tbody>
 </table>
@@ -750,27 +751,27 @@ Mean Model:
 
  Coefficients:
                estimate      san.se         wald            p
-(Intercept)  9.34248574 0.332520420 7.893839e+02 0.000000e+00
-dnase        0.03826145 0.166907624 5.254972e-02 8.186845e-01
-Lfev1        0.90325301 0.002801193 1.039759e+05 0.000000e+00
-Lcum_dnase  -0.08000904 0.080366664 9.911201e-01 3.194688e-01
-Bage        -0.06748831 0.005085720 1.760971e+02 0.000000e+00
-exac        -1.01599801 0.158179077 4.125605e+01 1.335380e-10
-iv_days     -0.04409341 0.003046720 2.094509e+02 0.000000e+00
-ps           0.31453151 0.330020130 9.083380e-01 3.405558e-01
+(Intercept)  9.52453982 0.432353706   485.299262 0.000000e+00
+dnase        3.87751714 0.207824186   348.109020 0.000000e+00
+Lfev1        0.90028123 0.003710034 58884.436821 0.000000e+00
+Lcum_dnase  -0.12176380 0.120647143     1.018597 3.128521e-01
+Bage        -0.06572481 0.006617369    98.647947 0.000000e+00
+exac        -0.84413278 0.258676910    10.648936 1.101343e-03
+iv_days     -0.05353571 0.007805664    47.040013 6.955214e-12
+ps           0.66743050 0.422267141     2.498259 1.139722e-01
 
 Scale Model:
  Scale Link:                identity 
 
  Estimated Scale Parameters:
-            estimate    san.se     wald p
-(Intercept)  98.1718 0.8049057 14875.91 0
+            estimate   san.se     wald p
+(Intercept) 98.27107 1.033442 9042.308 0
 
 Correlation Model:
  Correlation Structure:     independence 
 
 Returned Error Value:    0 
-Number of clusters:   7500   Maximum cluster size: 4 </code></pre>
+Number of clusters:   6025   Maximum cluster size: 4 </code></pre>
 </div>
 <div id="with-interactions" class="section level2">
 <h2>With Interactions</h2>
@@ -790,30 +791,30 @@ Mean Model:
 
  Coefficients:
                      estimate      san.se         wald            p
-(Intercept)       9.310268514 0.451404389   425.395468 0.000000e+00
-dnase             1.813559337 0.531755321    11.631610 6.484039e-04
-Lfev1             0.903434209 0.004695496 37019.467427 0.000000e+00
-Lcum_dnase        0.274339757 0.222640909     1.518335 2.178717e-01
-Bage             -0.067214829 0.005106379   173.262327 0.000000e+00
-exac             -1.014985978 0.158687164    40.910660 1.593495e-10
-iv_days          -0.044288050 0.003095799   204.657474 0.000000e+00
-ps               -2.046402696 0.979167061     4.367859 3.662298e-02
-dnase:Lfev1      -0.023668409 0.006708129    12.449025 4.182102e-04
-Lfev1:Lcum_dnase -0.005044964 0.002908106     3.009510 8.277732e-02
-Lfev1:ps          0.032304507 0.012399493     6.787634 9.179150e-03
+(Intercept)       9.312374917 0.633714906 2.159400e+02 0.000000e+00
+dnase             2.288104446 0.726113718 9.929844e+00 1.626204e-03
+Lfev1             0.902798757 0.006577236 1.884061e+04 0.000000e+00
+Lcum_dnase        0.128111840 0.411388435 9.697826e-02 7.554864e-01
+Bage             -0.065451557 0.006650804 9.684821e+01 0.000000e+00
+exac             -0.853466309 0.259328971 1.083105e+01 9.981184e-04
+iv_days          -0.052366030 0.007907629 4.385375e+01 3.538536e-11
+ps                2.247312585 1.485063881 2.290006e+00 1.302094e-01
+dnase:Lfev1       0.020183189 0.008831686 5.222667e+00 2.229433e-02
+Lfev1:Lcum_dnase -0.002894378 0.004699709 3.792875e-01 5.379848e-01
+Lfev1:ps         -0.020237216 0.017604587 1.321447e+00 2.503325e-01
 
 Scale Model:
  Scale Link:                identity 
 
  Estimated Scale Parameters:
-            estimate    san.se     wald p
-(Intercept) 98.12233 0.8048986 14861.18 0
+            estimate   san.se    wald p
+(Intercept) 98.23765 1.032952 9044.73 0
 
 Correlation Model:
  Correlation Structure:     independence 
 
 Returned Error Value:    0 
-Number of clusters:   7500   Maximum cluster size: 4 </code></pre>
+Number of clusters:   6025   Maximum cluster size: 4 </code></pre>
 </div>
 </div>
 <div id="inverse-probability-weighted-marginal-structural-model" class="section level1">
@@ -822,9 +823,9 @@ Number of clusters:   7500   Maximum cluster size: 4 </code></pre>
 <h2>Denominator</h2>
 <pre class="r"><code>DF$denominat &lt;- NA
 
-fm1a &lt;- glm(dnase ~ Ldnase*Lfev1 + Ldnase*exac + Ldnase*iv_days + Bage, family = &quot;binomial&quot;, data = DF)
+fm2a &lt;- glm(dnase ~ Ldnase*Lfev1 + Ldnase*exac + Ldnase*iv_days + Bage, family = &quot;binomial&quot;, data = DF)
 
-DF$denominat[DF$visit &gt; 1] &lt;- predict(fm1a, type = &quot;response&quot;)
+DF$denominat[DF$visit &gt; 1] &lt;- predict(fm2a, type = &quot;response&quot;)
 DF$denominat[DF$visit &gt; 1] &lt;- ifelse(DF$dnase[DF$visit &gt; 1] == 0, 
                                      1 - DF$denominat[DF$visit &gt; 1], DF$denominat[DF$visit &gt; 1])</code></pre>
 </div>
@@ -832,64 +833,96 @@ DF$denominat[DF$visit &gt; 1] &lt;- ifelse(DF$dnase[DF$visit &gt; 1] == 0,
 <h2>Numerator</h2>
 <pre class="r"><code>DF$numerat &lt;- NA
 
-fm1b &lt;- glm(dnase ~ Ldnase + Bage, family = &quot;binomial&quot;, data = DF)
+fm2b &lt;- glm(dnase ~ Ldnase + Bage, family = &quot;binomial&quot;, data = DF)
 
-DF$numerat[DF$visit &gt; 1] &lt;- predict(fm1b, type = &quot;response&quot;)
+DF$numerat[DF$visit &gt; 1] &lt;- predict(fm2b, type = &quot;response&quot;)
 DF$numerat[DF$visit &gt; 1] &lt;- ifelse(DF$dnase[DF$visit &gt; 1] == 0, 
                                    1 - DF$numerat[DF$visit &gt; 1], DF$numerat[DF$visit &gt; 1])</code></pre>
 </div>
+<div id="censoring-denominator" class="section level2">
+<h2>Censoring Denominator</h2>
+<pre class="r"><code>glm_cen_d &lt;- glm(censor ~ dnase + fev1 + exac + iv_days + Bage, family = &quot;binomial&quot;, data = subset(DF, visit != 6))
+
+DF &lt;- select(glm_cen_d$data, id, visit) %&gt;% 
+  mutate(denominat_cen = 1 - predict(glm_cen_d, type = &quot;response&quot;)) %&gt;% 
+  merge(., DF, all = TRUE)
+
+DF$denominat_cen[DF$visit == 6] &lt;- 1</code></pre>
+</div>
+<div id="censoring-numerator" class="section level2">
+<h2>Censoring Numerator</h2>
+<pre class="r"><code>glm_cen_n &lt;- glm(censor ~ Bage, family = &quot;binomial&quot;, data = subset(DF, visit != 6))
+
+DF &lt;- select(glm_cen_n$data, id, visit) %&gt;% 
+  mutate(numerat_cen = 1 - predict(glm_cen_n, type = &quot;response&quot;)) %&gt;% 
+  merge(., DF, all = TRUE)
+
+DF$numerat_cen[DF$visit == 6] &lt;- 1</code></pre>
+</div>
 <div id="stabilized-weight" class="section level2">
 <h2>Stabilized Weight</h2>
-<pre class="r"><code>DF$stabilized &lt;- DF$numerat / DF$denominat</code></pre>
+<pre class="r"><code>DF &lt;- as.data.table(DF)
+
+DF[, stabilized := numerat / denominat]
+DF[, cenwgt := numerat_cen / denominat_cen]</code></pre>
+<ul>
+<li>Note: still working on multiplying the weights over time correctly</li>
+</ul>
+<pre class="r"><code>DF[, nvisits := .N, by = id]
+DF[, cen2wgt := c(1, cenwgt[-nvisits]), by = id]
+DF[, cen2wgt_lag := shift(.SD, 1, &quot;lag&quot;), .SDcols = &quot;cen2wgt&quot;, by = id]
+DF[, stabilized_lag := shift(.SD, 1, &quot;lag&quot;), .SDcols = &quot;stabilized&quot;, by = id]
+DF[visit &gt; 1, cen2wgt := cen2wgt*cen2wgt_lag, by = id]
+DF[visit &gt; 2, stabilized := stabilized*stabilized_lag, by = id]
+DF[, newstab := stabilized*cen2wgt]</code></pre>
 </div>
 <div id="model-without-truncated-weights" class="section level2">
 <h2>Model Without Truncated Weights</h2>
-<pre class="r"><code>DF &lt;- subset(DF, visit &gt; 1)
+<pre class="r"><code>DF_msm &lt;- DF[visit &gt; 1,]
+DF_msm[, visit := factor(visit)]
+DF_msm[, Lcum_dnase := factor(Lcum_dnase)]</code></pre>
+<pre class="r"><code>fm2c &lt;- geese(fev1 ~ dnase*Lcum_dnase + Bage + visit, weights = stab, id = id, family = &quot;gaussian&quot;, data = DF_msm)
 
-DF$visit &lt;- factor(DF$visit)
-DF$Lcum_dnase &lt;- factor(DF$Lcum_dnase)</code></pre>
-<pre class="r"><code>fm1c &lt;- geese(fev1 ~ dnase*Lcum_dnase + Bage + visit, weights = stabilized, id = id, family = &quot;gaussian&quot;, data = DF)
-
-summary(fm1c)</code></pre>
+summary(fm2c)</code></pre>
 <pre><code>
 Call:
 geese(formula = fev1 ~ dnase * Lcum_dnase + Bage + visit, id = id, 
-    data = DF, weights = stabilized, family = &quot;gaussian&quot;)
+    data = DF_msm, weights = stab, family = &quot;gaussian&quot;)
 
 Mean Model:
  Mean Link:                 identity 
  Variance to Mean Relation: gaussian 
 
  Coefficients:
-                     estimate     san.se         wald            p
-(Intercept)        90.5871288 0.52435240 2.984602e+04 0.000000e+00
-dnase              -0.1462357 0.37953720 1.484562e-01 7.000150e-01
-Lcum_dnase1        -6.0148844 1.66523696 1.304675e+01 3.038104e-04
-Lcum_dnase2        -5.6071834 1.87876081 8.907309e+00 2.840315e-03
-Lcum_dnase3        -5.8330338 2.25764423 6.675410e+00 9.775200e-03
-Lcum_dnase4       -12.7219622 3.15228354 1.628762e+01 5.441830e-05
-Bage               -0.7079324 0.02029323 1.216973e+03 0.000000e+00
-visit3              1.1068941 0.17065655 4.206939e+01 8.809131e-11
-visit4              2.1408237 0.26252658 6.649902e+01 3.330669e-16
-visit5              3.3980497 0.35067581 9.389616e+01 0.000000e+00
-visit6              4.6444634 0.44689523 1.080089e+02 0.000000e+00
-dnase:Lcum_dnase1  -0.6181848 1.69267579 1.333795e-01 7.149535e-01
-dnase:Lcum_dnase2  -2.5926801 1.89161418 1.878593e+00 1.704941e-01
-dnase:Lcum_dnase3  -3.9324632 2.26356326 3.018172e+00 8.233620e-02
-dnase:Lcum_dnase4   0.2444640 3.17920835 5.912779e-03 9.387074e-01
+                    estimate     san.se         wald            p
+(Intercept)       88.6839881 0.55362984 2.565969e+04 0.000000e+00
+dnase              3.7363586 0.44626380 7.009932e+01 1.110223e-16
+Lcum_dnase1        2.8752495 1.61340143 3.175895e+00 7.473224e-02
+Lcum_dnase2        9.8817264 1.93274056 2.614078e+01 3.174093e-07
+Lcum_dnase3        7.9247947 3.20389030 6.118159e+00 1.338001e-02
+Lcum_dnase4        9.6746350 3.88901000 6.188581e+00 1.285773e-02
+Bage              -0.6059639 0.02353441 6.629592e+02 0.000000e+00
+visit3            -0.1902590 0.22850312 6.932761e-01 4.050523e-01
+visit4            -0.2898063 0.38484356 5.670839e-01 4.514200e-01
+visit5            -0.3344018 0.56520972 3.500402e-01 5.540904e-01
+visit6            -0.7768385 0.84717169 8.408502e-01 3.591537e-01
+dnase:Lcum_dnase1  1.3797564 1.64857632 7.004654e-01 4.026273e-01
+dnase:Lcum_dnase2 -1.6543526 1.93825731 7.285063e-01 3.933678e-01
+dnase:Lcum_dnase3  4.1142980 3.19733297 1.655830e+00 1.981673e-01
+dnase:Lcum_dnase4  7.0289888 3.94521753 3.174269e+00 7.480666e-02
 
 Scale Model:
  Scale Link:                identity 
 
  Estimated Scale Parameters:
             estimate   san.se     wald p
-(Intercept)  545.294 7.596706 5152.413 0
+(Intercept) 507.9801 8.565628 3517.022 0
 
 Correlation Model:
  Correlation Structure:     independence 
 
 Returned Error Value:    0 
-Number of clusters:   7500   Maximum cluster size: 5 </code></pre>
+Number of clusters:   6889   Maximum cluster size: 5 </code></pre>
 </div>
 </div>
 <div id="history-adjusted-marginal-structural-model" class="section level1">
