@@ -386,7 +386,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Newsome Five Methods</h1>
 <h4 class="author">Chuck Cleland</h4>
-<h4 class="date">May 30, 2019 09:05:31 AM EDT</h4>
+<h4 class="date">June 04, 2019 12:15:21 PM EDT</h4>
 
 </div>
 
@@ -819,6 +819,7 @@ Number of clusters:   6025   Maximum cluster size: 4 </code></pre>
 </div>
 <div id="inverse-probability-weighted-marginal-structural-model" class="section level1">
 <h1>Inverse Probability Weighted Marginal Structural Model</h1>
+<pre class="r"><code>DF &lt;- read_dta(&quot;c:/chuck/NYU/Khan/R01DA044037/Newsome/simdata/sim4plusB.dta&quot;)</code></pre>
 <div id="denominator" class="section level2">
 <h2>Denominator</h2>
 <pre class="r"><code>DF$denominat &lt;- NA
@@ -841,7 +842,8 @@ DF$numerat[DF$visit &gt; 1] &lt;- ifelse(DF$dnase[DF$visit &gt; 1] == 0,
 </div>
 <div id="censoring-denominator" class="section level2">
 <h2>Censoring Denominator</h2>
-<pre class="r"><code>glm_cen_d &lt;- glm(censor ~ dnase + fev1 + exac + iv_days + Bage, family = &quot;binomial&quot;, data = subset(DF, visit != 6))
+<pre class="r"><code>glm_cen_d &lt;- glm(censor ~ dnase + fev1 + exac + iv_days + Bage, 
+                 family = &quot;binomial&quot;, data = subset(DF, visit != 6))
 
 DF &lt;- select(glm_cen_d$data, id, visit) %&gt;% 
   mutate(denominat_cen = 1 - predict(glm_cen_d, type = &quot;response&quot;)) %&gt;% 
@@ -863,31 +865,170 @@ DF$numerat_cen[DF$visit == 6] &lt;- 1</code></pre>
 <h2>Stabilized Weight</h2>
 <pre class="r"><code>DF &lt;- as.data.table(DF)
 
-DF[, stabilized := numerat / denominat]
+DF[, stbwgt := numerat / denominat]
 DF[, cenwgt := numerat_cen / denominat_cen]</code></pre>
-<ul>
-<li>Note: still working on multiplying the weights over time correctly</li>
-</ul>
 <pre class="r"><code>DF[, nvisits := .N, by = id]
-DF[, cen2wgt := c(1, cenwgt[-nvisits]), by = id]
-DF[, cen2wgt_lag := shift(.SD, 1, &quot;lag&quot;), .SDcols = &quot;cen2wgt&quot;, by = id]
-DF[, stabilized_lag := shift(.SD, 1, &quot;lag&quot;), .SDcols = &quot;stabilized&quot;, by = id]
-DF[visit &gt; 1, cen2wgt := cen2wgt*cen2wgt_lag, by = id]
-DF[visit &gt; 2, stabilized := stabilized*stabilized_lag, by = id]
-DF[, newstab := stabilized*cen2wgt]</code></pre>
+DF[, IDX := 1:.N, by = id]
+DF[, cen_lag := shift(.SD, 1, &quot;lag&quot;), .SDcols = &quot;cen&quot;, by = id]
+DF[IDX == 1, cen2wgt := 1]
+DF[IDX &gt; 1, cen2wgt := cen_lag]
+DF[, cen3wgt := cumprod(cen2wgt), by = id]</code></pre>
+<pre class="r"><code>DF[IDX &gt; 1, stbwgt_cp := cumprod(stbwgt), by = id]
+DF[, newstab := stbwgt_cp*cen3wgt]</code></pre>
+<div id="check-that-weights-calculated-in-r-match-weights-calculated-in-stata" class="section level3">
+<h3>Check that weights calculated in R match weights calculated in Stata</h3>
+<pre class="r"><code>DF[1:20, .(id, visit, cen, cen3wgt, stbwgt_cp, stab, newstab)] %&gt;%
+  rename(stab_Stata = stab, stab_R = newstab) %&gt;%
+  select(id, visit, stab_Stata, stab_R) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">id</th>
+<th align="right">visit</th>
+<th align="right">stab_Stata</th>
+<th align="right">stab_R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0.9557924</td>
+<td align="right">0.9557924</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0.8936969</td>
+<td align="right">0.8936970</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">0.8351477</td>
+<td align="right">0.8351478</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0.7662544</td>
+<td align="right">0.7662544</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">0.6967661</td>
+<td align="right">0.6967661</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">0.6918967</td>
+<td align="right">0.6918967</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">4</td>
+<td align="right">0.6885636</td>
+<td align="right">0.6885636</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">2</td>
+<td align="right">0.9232316</td>
+<td align="right">0.9232316</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">3</td>
+<td align="right">1.0651128</td>
+<td align="right">1.0651128</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">4</td>
+<td align="right">0.8166417</td>
+<td align="right">0.8166418</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">0.8674014</td>
+<td align="right">0.8674015</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">3</td>
+<td align="right">0.7561534</td>
+<td align="right">0.7561535</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">4</td>
+<td align="right">0.6488219</td>
+<td align="right">0.6488221</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">0.5502186</td>
+<td align="right">0.5502187</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div id="model-without-truncated-weights" class="section level2">
 <h2>Model Without Truncated Weights</h2>
 <pre class="r"><code>DF_msm &lt;- DF[visit &gt; 1,]
 DF_msm[, visit := factor(visit)]
 DF_msm[, Lcum_dnase := factor(Lcum_dnase)]</code></pre>
-<pre class="r"><code>fm2c &lt;- geese(fev1 ~ dnase*Lcum_dnase + Bage + visit, weights = stab, id = id, family = &quot;gaussian&quot;, data = DF_msm)
+<pre class="r"><code>fm2c &lt;- geese(fev1 ~ dnase*Lcum_dnase + Bage + visit, 
+              weights = newstab, id = id, 
+              family = &quot;gaussian&quot;, data = DF_msm)
 
 summary(fm2c)</code></pre>
 <pre><code>
 Call:
 geese(formula = fev1 ~ dnase * Lcum_dnase + Bage + visit, id = id, 
-    data = DF_msm, weights = stab, family = &quot;gaussian&quot;)
+    data = DF_msm, weights = newstab, family = &quot;gaussian&quot;)
 
 Mean Model:
  Mean Link:                 identity 
@@ -895,28 +1036,28 @@ Mean Model:
 
  Coefficients:
                     estimate     san.se         wald            p
-(Intercept)       88.6839881 0.55362984 2.565969e+04 0.000000e+00
+(Intercept)       88.6839884 0.55362983 2.565969e+04 0.000000e+00
 dnase              3.7363586 0.44626380 7.009932e+01 1.110223e-16
-Lcum_dnase1        2.8752495 1.61340143 3.175895e+00 7.473224e-02
-Lcum_dnase2        9.8817264 1.93274056 2.614078e+01 3.174093e-07
-Lcum_dnase3        7.9247947 3.20389030 6.118159e+00 1.338001e-02
-Lcum_dnase4        9.6746350 3.88901000 6.188581e+00 1.285773e-02
-Bage              -0.6059639 0.02353441 6.629592e+02 0.000000e+00
-visit3            -0.1902590 0.22850312 6.932761e-01 4.050523e-01
-visit4            -0.2898063 0.38484356 5.670839e-01 4.514200e-01
-visit5            -0.3344018 0.56520972 3.500402e-01 5.540904e-01
-visit6            -0.7768385 0.84717169 8.408502e-01 3.591537e-01
-dnase:Lcum_dnase1  1.3797564 1.64857632 7.004654e-01 4.026273e-01
-dnase:Lcum_dnase2 -1.6543526 1.93825731 7.285063e-01 3.933678e-01
-dnase:Lcum_dnase3  4.1142980 3.19733297 1.655830e+00 1.981673e-01
-dnase:Lcum_dnase4  7.0289888 3.94521753 3.174269e+00 7.480666e-02
+Lcum_dnase1        2.8751761 1.61340523 3.175718e+00 7.474034e-02
+Lcum_dnase2        9.8817022 1.93274170 2.614062e+01 3.174353e-07
+Lcum_dnase3        7.9247284 3.20391296 6.117970e+00 1.338144e-02
+Lcum_dnase4        9.6746356 3.88901031 6.188580e+00 1.285773e-02
+Bage              -0.6059639 0.02353441 6.629593e+02 0.000000e+00
+visit3            -0.1902595 0.22850313 6.932795e-01 4.050511e-01
+visit4            -0.2898061 0.38484358 5.670828e-01 4.514205e-01
+visit5            -0.3344012 0.56520973 3.500390e-01 5.540910e-01
+visit6            -0.7768384 0.84717161 8.408502e-01 3.591537e-01
+dnase:Lcum_dnase1  1.3798308 1.64857943 7.005383e-01 4.026029e-01
+dnase:Lcum_dnase2 -1.6543255 1.93825840 7.284816e-01 3.933758e-01
+dnase:Lcum_dnase3  4.1143672 3.19735573 1.655862e+00 1.981629e-01
+dnase:Lcum_dnase4  7.0289915 3.94521786 3.174271e+00 7.480657e-02
 
 Scale Model:
  Scale Link:                identity 
 
  Estimated Scale Parameters:
             estimate   san.se     wald p
-(Intercept) 507.9801 8.565628 3517.022 0
+(Intercept) 507.9801 8.565628 3517.021 0
 
 Correlation Model:
  Correlation Structure:     independence 
